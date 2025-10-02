@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+venv/
+rooms.json
+users.json
+.env

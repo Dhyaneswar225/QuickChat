@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}Room {{ room }}{% endblock %}
+
+{% block content %}
+<style>
+    /* Smaller logo at top-left */
+    .logo {
+        display: inline-block;
+        font-size: 20px; /* smaller text */
+        font-weight: bold;
+        color: #4CAF50; /* green text */
+        text-decoration: none;
+        margin-bottom: 15px;
+    }
+
+    .logo:hover {
+        text-decoration: none;
+        opacity: 0.8;
+    }
+
+    #messages {
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 300px;
+        overflow-y: scroll;
+        margin-bottom: 10px;
+    }
+
+    form {
+        margin-top: 10px;
+    }
+
+    input[type="text"] {
+        width: 70%;
+        padding: 5px;
+    }
+
+    button {
+        padding: 5px 10px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        border-radius: 4px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    #clear-chat-form {
+        margin-top: 10px;
+    }
+</style>
+
+<!-- Smaller Logo -->
+<a href="{{ url_for('home') }}" class="logo">QUICKCHAT</a>
+
+<h2>Room: {{ room }} | Welcome, {{ current_user.id }}</h2>
+
+<div id="messages">
+    {% for msg in messages %}
+        <p><strong>{{ msg.sender }}:</strong> {{ msg.message }}</p>
+    {% endfor %}
+</div>
+
+<form id="message-form">
+    <input type="text" id="message" placeholder="Type a message...">
+    <button type="submit">Send</button>
+</form>
+
+<form id="clear-chat-form" method="POST" action="{{ url_for('clear_chat') }}">
+    <button type="submit">Clear Chat</button>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+    const socket = io();
+    const form = document.getElementById('message-form');
+    const input = document.getElementById('message');
+    const messages = document.getElementById('messages');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (input.value) {
+            socket.emit('message', { message: input.value, room: "{{ room }}" });
+            input.value = '';
+        }
+    });
+
+    socket.on('message', (msg) => {
+        const p = document.createElement('p');
+        p.innerHTML = `<strong>${msg.sender}:</strong> ${msg.message}`;
+        messages.appendChild(p);
+        messages.scrollTop = messages.scrollHeight;
+    });
+
+    const clearForm = document.getElementById('clear-chat-form');
+    clearForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await fetch(clearForm.action, { method: 'POST' });
+        messages.innerHTML = '';
+    });
+</script>
+{% endblock %}
