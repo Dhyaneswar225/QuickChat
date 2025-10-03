@@ -6,9 +6,9 @@
     /* Smaller logo at top-left */
     .logo {
         display: inline-block;
-        font-size: 20px; /* smaller text */
+        font-size: 20px;
         font-weight: bold;
-        color: #4CAF50; /* green text */
+        color: #4CAF50;
         text-decoration: none;
         margin-bottom: 15px;
     }
@@ -24,6 +24,7 @@
         height: 300px;
         overflow-y: scroll;
         margin-bottom: 10px;
+        background: #fff;
     }
 
     form {
@@ -33,6 +34,8 @@
     input[type="text"] {
         width: 70%;
         padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
     }
 
     button {
@@ -74,32 +77,5 @@
 </form>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-<script>
-    const socket = io();
-    const form = document.getElementById('message-form');
-    const input = document.getElementById('message');
-    const messages = document.getElementById('messages');
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (input.value) {
-            socket.emit('message', { message: input.value, room: "{{ room }}" });
-            input.value = '';
-        }
-    });
-
-    socket.on('message', (msg) => {
-        const p = document.createElement('p');
-        p.innerHTML = `<strong>${msg.sender}:</strong> ${msg.message}`;
-        messages.appendChild(p);
-        messages.scrollTop = messages.scrollHeight;
-    });
-
-    const clearForm = document.getElementById('clear-chat-form');
-    clearForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await fetch(clearForm.action, { method: 'POST' });
-        messages.innerHTML = '';
-    });
-</script>
+<script src="{{ url_for('static', filename='room.js') }}"></script>
 {% endblock %}

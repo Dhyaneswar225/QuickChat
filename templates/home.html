@@ -7,13 +7,36 @@
     /* Header styling */
     .header {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        justify-content: space-between; /* Space between logo/welcome and logout */
+        align-items: flex-start; /* Align items to the top */
         margin-bottom: 20px;
+    }
+
+    .header .logo-container {
+        display: flex;
+        flex-direction: column; /* Stack logo and welcome vertically */
+        align-items: flex-start; /* Align to the left */
+    }
+
+    .header .logo {
+        display: inline-block;
+        font-size: 24px; /* Slightly larger for prominence */
+        font-weight: bold;
+        color: #4CAF50;
+        text-decoration: none;
+        margin-bottom: 15px; /* Space below logo */
+    }
+
+    .header .logo:hover {
+        text-decoration: none;
+        opacity: 0.8;
     }
 
     .header .welcome {
         font-size: 18px;
+        font-family: 'Roboto', Arial, sans-serif; /* Modern, clean font */
+        font-weight: 500; /* Medium weight for better readability */
+        color: #4CAF50; /* Green color for welcome message */
     }
 
     .header .logout-btn {
@@ -24,46 +47,90 @@
         border-radius: 4px;
         text-decoration: none;
         cursor: pointer;
+        font-family: 'Roboto', Arial, sans-serif; /* Consistent font */
     }
 
     .header .logout-btn:hover {
         background-color: #45a049;
     }
 
+    /* Container for centering room sections */
+    .room-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
     .room-section {
         border: 1px solid #ccc;
-        padding: 15px;
-        margin-bottom: 20px;
+        padding: 25px; /* Increased padding for height */
+        margin-bottom: 25px; /* Increased spacing between boxes */
         border-radius: 8px;
         background-color: #f9f9f9;
-        width: 300px;
+        width: 400px; /* Increased width */
+        box-sizing: border-box;
     }
 
     .room-section h3 { margin-top: 0; }
 
-    input[type="text"] { padding: 5px; width: 70%; margin-right: 5px; }
+    input[type="text"], select {
+        padding: 8px; /* Increased padding */
+        width: 70%;
+        margin-right: 10px; /* Increased margin */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px; /* Increased font size */
+    }
 
-    input[type="submit"] { padding: 5px 10px; cursor: pointer; }
+    input[type="submit"] {
+        padding: 8px 15px; /* Increased padding */
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px; /* Increased font size */
+    }
+
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
 </style>
 
-<!-- Header with logout at right -->
+<!-- Header with QUICKCHAT logo, welcome message, and logout -->
 <div class="header">
-    <div class="welcome">Welcome, {{ current_user.id }}!</div>
+    <div class="logo-container">
+        <a href="{{ url_for('home') }}" class="logo">QUICKCHAT</a>
+        <div class="welcome">Welcome, {{ current_user.id }}!</div>
+    </div>
     <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
 </div>
 
-<div class="room-section">
-    <h3>Create a Room</h3>
-    <form method="POST" action="{{ url_for('create_room') }}">
-        <input type="submit" value="Create New Room">
-    </form>
-</div>
+<!-- Container to center room sections -->
+<div class="room-container">
+    <div class="room-section">
+        <h3>Create a Room</h3>
+        <form method="POST" action="{{ url_for('create_room') }}">
+            <label for="expiry">Clear chat after:</label>
+            <select name="expiry" id="expiry">
+                <option value="60">1 minute</option>
+                <option value="3600">60 minutes</option>
+                <option value="21600">6 hours</option>
+                <option value="86400">1 day</option>
+                <option value="172800">2 days</option>
+                <option value="604800" selected>1 week</option>
+            </select>
+            <input type="submit" value="Create New Room">
+        </form>
+    </div>
 
-<div class="room-section">
-    <h3>Join a Room</h3>
-    <form method="POST" action="{{ url_for('join_room_route') }}">
-        <label>Room Code: <input type="text" name="room_code" required></label>
-        <input type="submit" value="Join Room">
-    </form>
+    <div class="room-section">
+        <h3>Join a Room</h3>
+        <form method="POST" action="{{ url_for('join_room_route') }}">
+            <label>Room Code: <input type="text" name="room_code" required></label>
+            <input type="submit" value="Join Room">
+        </form>
+    </div>
 </div>
 {% endblock %}

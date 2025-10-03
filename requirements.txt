@@ -3,3 +3,6 @@ flask-socketio
 flask-login
 werkzeug
 eventlet
+cryptography 
+python-dotenv 
+flask-limiter
