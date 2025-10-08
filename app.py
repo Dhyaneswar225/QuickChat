@@ -371,4 +371,4 @@ if __name__ == "__main__":
     cleanup_thread = threading.Thread(target=cleanup_expired_rooms, daemon=True)
     cleanup_thread.start()
     logger.debug("Starting Flask-SocketIO server")
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True, use_reloader=True)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True, use_reloader=True,allow_unsafe_werkzeug=True)
